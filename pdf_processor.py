@@ -1,4 +1,6 @@
 from PyPDF2 import PdfReader, PdfWriter
+from pdf2image import convert_from_path
+import io
 
 
 class PDFProcessor:
@@ -22,6 +24,25 @@ class PDFProcessor:
         Get total number of pages in PDF
         """
         return len(self.reader.pages)
+
+    def convert_pdf_to_images(self) -> list:
+        """
+        PDF faylni rasmlar ro'yxatiga o'tkazish
+        
+        Returns:
+            list: PNG formatidagi rasmlar ro'yxati (bytes)
+        """
+        # PDF faylni rasmlarga o'tkazish
+        images = convert_from_path(self.pdf_path)
+        
+        # Har bir rasmni PNG formatiga o'tkazish
+        png_images = []
+        for image in images:
+            img_byte_arr = io.BytesIO()
+            image.save(img_byte_arr, format='PNG')
+            png_images.append(img_byte_arr.getvalue())
+            
+        return png_images
 
     def extract_pages(self, start_page: int, end_page: int) -> str:
         """
