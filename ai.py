@@ -53,8 +53,18 @@ class EnglishAI:
 
     def get_grammar_from_pdf(self, pdf_path: str) -> dict:
         """
-        Pdf file ichidagi grammar ma'lumotlarini olish va ularni list holatda qaytarish kerak.
-        Bu function faqat grammar titlelarini qaytarishi kerak.
+        Pdf file ichidagi grammar ma'lumotlarini olish va ularni qaytarish.
+        Bu function grammar titlelarini va asosiy mavzuning nomini qaytaradi.
+
+        Args:
+            pdf_path (str): PDF fayl yo'li
+
+        Returns:
+            dict: {
+                'main_topic': {'number': int, 'title': str},
+                'titles': list[str],
+                'thread_id': str
+            }
         """
         # PDF faylni rasmga o'tkazish
         pdf_processor = PDFProcessor(pdf_path)
@@ -66,13 +76,21 @@ class EnglishAI:
                 "role": "system",
                 "content": """You are a helpful assistant that analyzes English learning materials and extracts grammar topics.
                 Your task is to:
-                1. Find ALL grammar topics/titles from the PDF
-                2. Return them in a clear, organized list
-                3. Include only grammar-related titles
-                4. Keep the original English titles as they appear in the PDF
-                5. Ignore non-grammar content
+                1. Find the main topic number and title (e.g. "2 Home", "3 Family")
+                2. Find ALL grammar topics/titles from the PDF
+                3. Return them in a clear, organized format
+                4. Include only grammar-related titles
+                5. Keep the original English titles as they appear in the PDF
+                6. Ignore non-grammar content
                 
-                Return the response as a JSON with a single key 'titles' containing an array of grammar titles.""",
+                Return the response as a JSON with:
+                {
+                    "main_topic": {
+                        "number": 2,
+                        "title": "Home"
+                    },
+                    "titles": ["Present Simple", "There is/are", ...]
+                }""",
             }
         ]
 
@@ -87,7 +105,7 @@ class EnglishAI:
                     "content": [
                         {
                             "type": "text",
-                            "text": "Please analyze this page and extract all grammar topic titles:",
+                            "text": "Please analyze this page and extract the main topic and all grammar titles:",
                         },
                         {
                             "type": "image_url",
@@ -100,7 +118,7 @@ class EnglishAI:
             )
 
         response = self.client.chat.completions.create(
-            model="gpt-4o",  # GPT-4 Vision modelini ishlatamiz
+            model="gpt-4o",
             messages=messages,
             max_tokens=1000,
             response_format={"type": "json_object"},

@@ -18,22 +18,22 @@ async def start_agent(message: str):
         new_pdf_path = pdf_processor.extract_pages(int(start_page), int(end_page))
         print(f"🔍 New PDF path: {new_pdf_path}")
 
-        vocabulary = english_ai.read_pdf_and_return_new_vocabulary(new_pdf_path)
-        print(f"🔍 Vocabulary count: {len(vocabulary)}")
+        # vocabulary = english_ai.read_pdf_and_return_new_vocabulary(new_pdf_path)
+        # print(f"🔍 Vocabulary count: {len(vocabulary)}")
 
-        # TODO: yangi so'zlarni notion ga yuklash
-        await notion_manager.get_all_words_and_update_database()
-        # yangi so'zni databasedan tekshirish kerak u yerda bo'lmasa uni notionga qo'shish kerak
-        new_words = [word for word in vocabulary if not word_exists(word.capitalize())]
-        print(f"🔍 New words: {new_words}")
+        # # TODO: yangi so'zlarni notion ga yuklash
+        # await notion_manager.get_all_words_and_update_database()
+        # # yangi so'zni databasedan tekshirish kerak u yerda bo'lmasa uni notionga qo'shish kerak
+        # new_words = [word for word in vocabulary if not word_exists(word.capitalize())]
 
-        # TODO: yangi so'zlarni notionga qo'shish
-        for word in new_words:
-            await notion_manager.add_vocabulary(word, vocabulary[word])
-
-        # TODO: yangi so'zlarni telegramga yuborish
+        # # TODO: yangi so'zlarni notionga qo'shish
+        # for word in new_words:
+        #     await notion_manager.add_vocabulary(word, vocabulary[word])
 
         # TODO: ai yordamida darsdagi yangi grammar mavzularini ajratib olamiz
+        grammar_titles = english_ai.get_grammar_from_pdf(new_pdf_path)
+        print(f"🔍 Grammar main topic: {grammar_titles['main_topic']}")
+        print(f"🔍 Grammar titles: {grammar_titles['titles']}")
 
         # TODO: notionda yangi mavzuga oid sahifa yaratamiz
 
