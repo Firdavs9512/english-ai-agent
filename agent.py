@@ -36,6 +36,10 @@ async def start_agent(message: str):
         print(f"🔍 Grammar titles: {grammar_titles['titles']}")
 
         # TODO: notionda yangi mavzuga oid sahifa yaratamiz
+        lesson_page_id = await notion_manager.create_lesson_page(
+            f"{grammar_titles['main_topic']['number']}-dars. {grammar_titles['main_topic']['title']}"
+        )
+        print(f"🔍 Lesson page ID: {lesson_page_id}")
 
         # TODO: ai ajratgan grammar titlelar yordamida yangi grammar darsini yaratamiz
 
