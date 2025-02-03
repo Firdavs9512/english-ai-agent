@@ -55,33 +55,34 @@ class EnglishAI:
         """
         Pdf file ichidagi grammar ma'lumotlarini olish va ularni qaytarish.
         Bu function grammar titlelarini va asosiy mavzuning nomini qaytaradi.
-
+    
         Args:
             pdf_path (str): PDF fayl yo'li
-
+    
         Returns:
             dict: {
                 'main_topic': {'number': int, 'title': str},
-                'titles': list[str],
+                'titles': list[str], 
                 'thread_id': str
             }
         """
         # PDF faylni rasmga o'tkazish
         pdf_processor = PDFProcessor(pdf_path)
         images = pdf_processor.convert_pdf_to_images()
-
+    
         # OpenAI ga so'rov yuborish
         messages = [
             {
                 "role": "system",
                 "content": """You are a helpful assistant that analyzes English learning materials and extracts grammar topics.
                 Your task is to:
-                1. Find the main topic number and title (e.g. "2 Home", "3 Family")
-                2. Find ALL grammar topics/titles from the PDF
+                1. Find the main topic number and title that appears at the beginning (e.g. "2 Home", "3 Family")
+                2. Find ALL grammar topics/titles from ALL pages of the PDF
                 3. Return them in a clear, organized format
                 4. Include only grammar-related titles
                 5. Keep the original English titles as they appear in the PDF
-                6. Ignore non-grammar content
+                6. For main topic, only include titles with just a number (e.g. "2 Home"), ignore titles with letters (e.g. "2A What are you?")
+                7. Ignore non-grammar content
                 
                 Return the response as a JSON with:
                 {
@@ -90,22 +91,24 @@ class EnglishAI:
                         "title": "Home"
                     },
                     "titles": ["Present Simple", "There is/are", ...]
-                }""",
+                }
+                
+                Process ALL pages and combine the results into a single response.""",
             }
         ]
-
+    
         # Har bir rasmni message sifatida qo'shish
         for image in images:
             # Rasmni base64 formatiga o'tkazish
             image_base64 = base64.b64encode(image).decode("utf-8")
-
+    
             messages.append(
                 {
-                    "role": "user",
+                    "role": "user", 
                     "content": [
                         {
                             "type": "text",
-                            "text": "Please analyze this page and extract the main topic and all grammar titles:",
+                            "text": "Please analyze this page and extract the main topic and all grammar titles. Remember to only include the main topic with just a number (e.g. '2 Home') and ignore titles with letters (e.g. '2A What are you?'):",
                         },
                         {
                             "type": "image_url",
