@@ -143,6 +143,16 @@ class NotionManager:
         )
         return response
 
+    async def update_children_in_the_page(self, page_id: str, children: list):
+        """
+        Update children in the page
+        """
+        response = await self.client.blocks.children.update(
+            block_id=page_id,
+            children=children,
+        )
+        return response
+
 
 # async def main():
 #     notion_manager = NotionManager()
@@ -175,19 +185,121 @@ class NotionManager:
 # create new lesson page
 async def main():
     notion_manager = NotionManager()
-    page_id = await notion_manager.create_lesson_page("Lesson 2")
-    await notion_manager.create_grammar_page(
-        page_id,
+    # page_id = await notion_manager.create_lesson_page("Lesson 2")
+    await notion_manager.update_children_in_the_page(
+        "190b8b92-d213-81a2-b724-c5eb2b0f5396",
         [
             {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {
+                    "rich_text": [{"text": {"content": "There is – There are"}}]
+                },
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
                 "paragraph": {
-                    "text": [{"text": {"content": "This is a test grammar page"}}]
-                }
-            }
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": "In this lesson, we will explore the use of 'There is' and 'There are' in English grammar. These phrases are essential for indicating the existence or presence of something. Understanding how to use them correctly will help you describe objects and situations effectively."
+                            }
+                        }
+                    ]
+                },
+            },
+            {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {"rich_text": [{"text": {"content": "Main Rules"}}]},
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": "1. 'There is' is used for singular nouns and uncountable nouns. \n   - Example: There is a cat in the garden. \n   - Example: There is milk in the fridge."
+                            }
+                        }
+                    ]
+                },
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": "2. 'There are' is used for plural nouns.\n   - Example: There are five books on the table.\n   - Example: There are many stars in the sky."
+                            }
+                        }
+                    ]
+                },
+            },
+            {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {"rich_text": [{"text": {"content": "Common Usage"}}]},
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": "In real-life conversations, 'There is' and 'There are' help you describe environments and situations. For example:\n\n- \"There is a meeting at 10 AM.\"\n- \"There are two options to choose from.\"\n\n⚠️ Note: In spoken English, 'There's' is a common contraction for 'There is'."
+                            }
+                        }
+                    ]
+                },
+            },
+            {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {
+                    "rich_text": [{"text": {"content": "Practice Exercises"}}]
+                },
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": "1. Fill in the blanks with 'There is' or 'There are':\n   - _______ a dog outside.\n   - _______ three apples on the counter.\n\n2. Rewrite the sentences using 'There is' or 'There are':\n   - A book is on the desk.\n   - Many people are in the park.\n\n3. Correct the mistakes in the following sentences:\n   - There is two cats in the garden.\n   - There are a cake on the table."
+                            }
+                        }
+                    ]
+                },
+            },
+            {
+                "object": "block",
+                "type": "heading_1",
+                "heading_1": {"rich_text": [{"text": {"content": "Common Mistakes"}}]},
+            },
+            {
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": "🚫 Avoid these common mistakes:\n\n1. Using 'There is' with plural nouns.\n   - Incorrect: There is many cars in the parking lot.\n   - Correct: There are many cars in the parking lot.\n\n2. Using 'There are' with uncountable nouns.\n   - Incorrect: There are milk in the fridge.\n   - Correct: There is milk in the fridge.\n\n📌 Important: Remember, 'There is' is for singular and uncountable nouns, while 'There are' is for plural nouns (Uzbek: 'There is' birlik va sanalmas nomlar uchun ishlatiladi, 'There are' ko'plik nomlar uchun.)"
+                            }
+                        }
+                    ]
+                },
+            },
         ],
     )
 
 
 # Example testing
-# if __name__ == "__main__":
-#     asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

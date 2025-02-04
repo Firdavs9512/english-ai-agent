@@ -55,21 +55,21 @@ class EnglishAI:
         """
         Pdf file ichidagi grammar ma'lumotlarini olish va ularni qaytarish.
         Bu function grammar titlelarini va asosiy mavzuning nomini qaytaradi.
-    
+
         Args:
             pdf_path (str): PDF fayl yo'li
-    
+
         Returns:
             dict: {
                 'main_topic': {'number': int, 'title': str},
-                'titles': list[str], 
+                'titles': list[str],
                 'thread_id': str
             }
         """
         # PDF faylni rasmga o'tkazish
         pdf_processor = PDFProcessor(pdf_path)
         images = pdf_processor.convert_pdf_to_images()
-    
+
         # OpenAI ga so'rov yuborish
         messages = [
             {
@@ -96,15 +96,15 @@ class EnglishAI:
                 Process ALL pages and combine the results into a single response.""",
             }
         ]
-    
+
         # Har bir rasmni message sifatida qo'shish
         for image in images:
             # Rasmni base64 formatiga o'tkazish
             image_base64 = base64.b64encode(image).decode("utf-8")
-    
+
             messages.append(
                 {
-                    "role": "user", 
+                    "role": "user",
                     "content": [
                         {
                             "type": "text",
@@ -133,7 +133,7 @@ class EnglishAI:
 
         return result
 
-    def ai_create_grammar_lesson(self, grammar_info: dict) -> dict:
+    def ai_create_grammar_lesson(self, grammar_info: str) -> dict:
         """
         Men bergan grammar ma'lumotlarini asosida yangi grammar darsini yaratish.
 
@@ -143,7 +143,7 @@ class EnglishAI:
                 - thread_id: Oldingi muloqot ID si
 
         Returns:
-            dict: Notion page uchun formatda tayyorlangan dars ma'lumotlari
+            dict: Notion page uchun formatda tayyorlangan dars ma'lumotlari, faqat ichida children bo'lishi kerak
         """
         response = self.client.chat.completions.create(
             model="gpt-4o",
@@ -168,10 +168,6 @@ class EnglishAI:
                     
                     Return the response as a JSON object formatted for Notion API with these blocks:
                     {
-                        "parent": {"page_id": "your-page-id"},
-                        "properties": {
-                            "title": [{"text": {"content": "Grammar Topic"}}]
-                        },
                         "children": [
                             {
                                 "object": "block",
@@ -193,7 +189,7 @@ class EnglishAI:
                 },
                 {
                     "role": "user",
-                    "content": f"Please create a comprehensive grammar lesson about: {grammar_info['title']}",
+                    "content": f"Please create a comprehensive grammar lesson about: {grammar_info}",
                 },
             ],
             temperature=0.7,

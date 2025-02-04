@@ -41,9 +41,24 @@ async def start_agent(message: str):
         )
         print(f"🔍 Lesson page ID: {lesson_page_id}")
 
+        # hozirchalik titlelardan faqat 2 tasini yuborish kerak
+        titles = grammar_titles["titles"][:2]
+
+        content = []
         # TODO: ai ajratgan grammar titlelar yordamida yangi grammar darsini yaratamiz
+        for title in titles:
+            response = english_ai.ai_create_grammar_lesson(title)
+            content.extend(response["children"])
+            # yangi titledan oldin divider qo'shish kerak
+            content.append(
+                {
+                    "object": "block",
+                    "type": "divider",
+                }
+            )
 
         # TODO: yangi grammar darsni notion ga yuklamiz
+        await notion_manager.update_children_in_the_page(lesson_page_id, content)
 
     except Exception as e:
         print(f"❌ Error: {str(e)}")
