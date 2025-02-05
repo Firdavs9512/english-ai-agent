@@ -147,7 +147,7 @@ class NotionManager:
         """
         Update children in the page
         """
-        response = await self.client.blocks.children.update(
+        response = await self.client.blocks.children.append(
             block_id=page_id,
             children=children,
         )
