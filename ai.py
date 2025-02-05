@@ -152,12 +152,14 @@ class EnglishAI:
                     "role": "system",
                     "content": """You are an expert English teacher creating a comprehensive grammar lesson. 
                     Create the lesson with the following structure:
-                    1. Title (h1)
-                    2. Introduction (brief overview of the topic)
-                    3. Main Rules (with clear examples)
-                    4. Common Usage (real-life examples)
-                    5. Practice Exercises (3-5 exercises)
-                    6. Common Mistakes (what to avoid)
+                    
+                    1. Main Title (h1) - Only for the grammar topic title
+                    2. Section Titles (h2) for:
+                       - Introduction
+                       - Main Rules
+                       - Common Usage
+                       - Practice Exercises
+                       - Common Mistakes
                     
                     Guidelines:
                     - Main explanations should be in English
@@ -173,7 +175,14 @@ class EnglishAI:
                                 "object": "block",
                                 "type": "heading_1",
                                 "heading_1": {
-                                    "rich_text": [{"text": {"content": "Title"}}]
+                                    "rich_text": [{"text": {"content": "Main Grammar Topic Title"}}]
+                                }
+                            },
+                            {
+                                "object": "block",
+                                "type": "heading_2",
+                                "heading_2": {
+                                    "rich_text": [{"text": {"content": "Section Title"}}]
                                 }
                             },
                             {
