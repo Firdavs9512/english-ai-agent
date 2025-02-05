@@ -60,6 +60,8 @@ async def start_agent(message: str):
         # TODO: yangi grammar darsni notion ga yuklamiz
         await notion_manager.update_children_in_the_page(lesson_page_id, content)
 
+        print("✅ Grammar lesson created successfully")
+
     except Exception as e:
         print(f"❌ Error: {str(e)}")
 
