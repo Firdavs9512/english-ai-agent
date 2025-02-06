@@ -3,6 +3,7 @@ from pdf_processor import PDFProcessor
 from ai import EnglishAI
 from notion import NotionManager
 from database import word_exists
+from select import select_vocabulary_page, select_lesson_page
 
 english_ai = EnglishAI()
 notion_manager = NotionManager()
@@ -11,6 +12,13 @@ notion_manager = NotionManager()
 async def start_agent(message: str):
     """Start the agent with a lesson request"""
     try:
+        # Select pages first
+        vocabulary_page_id = await select_vocabulary_page()
+        notion_manager.set_vocabulary_page_id(vocabulary_page_id)
+        
+        lesson_page_id = await select_lesson_page()
+        notion_manager.set_lesson_page_id(lesson_page_id)
+        
         start_page, end_page = message.split("-")
         print(f"🔍 Start page: {start_page}, End page: {end_page}")
 
