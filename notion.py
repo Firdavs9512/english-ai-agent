@@ -7,16 +7,29 @@ from database import create_word, word_exists
 class NotionManager:
     def __init__(self):
         self.client = AsyncClient(auth=NOTION_TOKEN)
+        self.vocabulary_page_id = None
+        self.lesson_page_id = None
+
+    def set_vocabulary_page_id(self, page_id: str):
+        """Set the page ID for vocabulary"""
+        self.vocabulary_page_id = page_id
+
+    def set_lesson_page_id(self, page_id: str):
+        """Set the page ID for lessons"""
+        self.lesson_page_id = page_id
 
     async def add_vocabulary(self, word: str, translation: str):
         """
         Add new word to vocabulary database with capitalized first letters
         """
+        if not self.vocabulary_page_id:
+            raise Exception("Vocabulary page ID not set. Please select a page first.")
+
         word = word.strip().capitalize()
         translation = translation.strip().capitalize()
 
         await self.client.pages.create(
-            parent={"database_id": "18eb8b92-d213-80ee-ae0f-d8a4d0ba4c69"},
+            parent={"database_id": self.vocabulary_page_id},
             properties={
                 "Enlish": {"title": [{"text": {"content": word}}]},
                 "O'zbek": {"rich_text": [{"text": {"content": translation}}]},
@@ -127,8 +140,11 @@ class NotionManager:
         """
         Create a new lesson page
         """
+        if not self.lesson_page_id:
+            raise Exception("Lesson page ID not set. Please select a page first.")
+
         new_page = await self.client.pages.create(
-            parent={"page_id": "18eb8b92-d213-8024-ab92-ee904d792d47"},
+            parent={"page_id": self.lesson_page_id},
             properties={"title": {"title": [{"text": {"content": title}}]}},
         )
         return new_page["id"]
